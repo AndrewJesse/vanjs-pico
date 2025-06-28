@@ -2,7 +2,7 @@ import van from 'vanjs-core';
 import * as vanX from "vanjs-ext";
 import './style.css';
 
-const { table, tr, th, td, h5 } = van.tags;
+const { table, tr, th, td, h5, button, ul, li, div } = van.tags;
 
 const tableHeader = () =>
   tr(
@@ -22,7 +22,7 @@ const tableHeader = () =>
     th(h5("Image"))
   );
 
-const hammers = [
+const hammers = vanX.reactive([
   { brand: "Estwing", brandScore: 4.8, name: "Claw Hammer", type: "General Purpose", usage: "Driving/removing nails", material: "Steel", weight: 16, length: 13, handle: "Wood", finish: "Polished", price: 19.99, rating: 4.5, likes: 120, image: "[jpg]" },
   { brand: "Stanley", brandScore: 4.6, name: "Ball Peen Hammer", type: "Metalworking", usage: "Shaping metal", material: "Steel", weight: 24, length: 14, handle: "Fiberglass", finish: "Polished", price: 25.50, rating: 4.7, likes: 230, image: "[jpg]" },
   { brand: "DeWalt", brandScore: 4.7, name: "Framing Hammer", type: "Carpentry", usage: "Framing wood", material: "Steel", weight: 22, length: 16, handle: "Fiberglass", finish: "Milled", price: 29.95, rating: 4.6, likes: 205, image: "[jpg]" },
@@ -38,7 +38,7 @@ const hammers = [
   { brand: "OX Tools", brandScore: 4.3, name: "Brick Hammer", type: "Masonry", usage: "Cutting/chipping brick", material: "Steel", weight: 24, length: 16, handle: "Fiberglass", finish: "Polished", price: 28.90, rating: 4.4, likes: 110, image: "[jpg]" },
   { brand: "Stanley", brandScore: 4.6, name: "Sledge Hammer", type: "Heavy Duty", usage: "Demolition", material: "Steel", weight: 96, length: 36, handle: "Fiberglass", finish: "Painted", price: 45.00, rating: 4.8, likes: 340, image: "[jpg]" },
   { brand: "Estwing", brandScore: 4.8, name: "Rock Hammer", type: "Geology", usage: "Rock splitting", material: "Steel", weight: 20, length: 13, handle: "Steel", finish: "Polished", price: 35.00, rating: 4.8, likes: 145, image: "[jpg]" }
-];
+]);
 
 const ToolTable = () => [
   table(
@@ -65,4 +65,11 @@ const Tool = ({ brand, brandScore, name, type, usage, material, weight, length, 
     td(image)
   );
 
-van.add(document.body, ToolTable());
+const test_list = vanX.reactive([5,3,7,4,1,9,6,3,0,10,6,8,9,5,3,5])
+
+const itemList = () => button({ onclick: () => vanX.replace(test_list, l => [...l].sort((a, b) => a - b))}, "Sort them thangs!");
+
+const lis_test_items = () => div(() =>
+  test_list.map(n => (n + " "))
+)
+van.add(document.body, ToolTable(), itemList(), lis_test_items());
