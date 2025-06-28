@@ -1,8 +1,8 @@
 import van from 'vanjs-core';
-import * as vanX from "vanjs-ext";
+import { reactive, replace } from "vanjs-ext";
 import './style.css';
 
-const { table, tr, th, td, h5, button, ul, li, div } = van.tags;
+const { table, tr, th, td, h5, button, div, span } = van.tags;
 
 const tableHeader = () =>
   tr(
@@ -17,12 +17,12 @@ const tableHeader = () =>
     th(h5("Handle Type")),
     th(h5("Head Finish")),
     th(h5("Price")),
-    th(h5("Rating")),
+    th(button({ onclick: () => replace(hammers, hs => [...hs].sort((a, b) => b.rating - a.rating)) }, 'Sort by Rating')),
     th(h5("Likes")),
     th(h5("Image"))
   );
 
-const hammers = vanX.reactive([
+const hammers = reactive([
   { brand: "Estwing", brandScore: 4.8, name: "Claw Hammer", type: "General Purpose", usage: "Driving/removing nails", material: "Steel", weight: 16, length: 13, handle: "Wood", finish: "Polished", price: 19.99, rating: 4.5, likes: 120, image: "[jpg]" },
   { brand: "Stanley", brandScore: 4.6, name: "Ball Peen Hammer", type: "Metalworking", usage: "Shaping metal", material: "Steel", weight: 24, length: 14, handle: "Fiberglass", finish: "Polished", price: 25.50, rating: 4.7, likes: 230, image: "[jpg]" },
   { brand: "DeWalt", brandScore: 4.7, name: "Framing Hammer", type: "Carpentry", usage: "Framing wood", material: "Steel", weight: 22, length: 16, handle: "Fiberglass", finish: "Milled", price: 29.95, rating: 4.6, likes: 205, image: "[jpg]" },
@@ -65,11 +65,22 @@ const Tool = ({ brand, brandScore, name, type, usage, material, weight, length, 
     td(image)
   );
 
-const test_list = vanX.reactive([5,3,7,4,1,9,6,3,0,10,6,8,9,5,3,5])
+const AppButton = () => {
+  const test_list = reactive([5,3,7,4,1,9,6,3,0,10,6,8,9,5,3,5]);
+  const ascendState = van.state(true); // true = ascending
 
-const itemList = () => button({ onclick: () => vanX.replace(test_list, l => [...l].sort((a, b) => a - b))}, "Sort them thangs!");
+  const toggleSort = () => {
+    const asc = ascendState.val;
+    replace(test_list, list => [...list].sort((a, b) => asc ? a - b : b - a));
+    ascendState.val = !asc;
+  };
 
-const lis_test_items = () => div(() =>
-  test_list.map(n => (n + " "))
-)
-van.add(document.body, ToolTable(), itemList(), lis_test_items());
+  const buttonText = () => ascendState.val ? 'Sort Ascending' : 'Sort Descending';
+  const listView = () => div(() => test_list.map(n => n + ' '));
+
+  return div(
+    button({ onclick: toggleSort }, buttonText),
+    listView()
+  );
+};
+van.add(document.body, ToolTable(), AppButton());
